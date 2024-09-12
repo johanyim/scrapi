@@ -1,42 +1,21 @@
-state:
-  thing: 123
+state: This
 host: 127.0.0.1:6000
 endpoints:
-  - get: 
-    to: /todos
-    returns: 
-      - date: may 10
-        content: today I did this
-
-      - date: july 10
-        content: today I did this
-
-      - date: august 12
-        content: today I did this
-    status: 200
-
-  - get: 
-    to: /todo/1
-    returns: 
-      - date: may 10
-        content: today I did this
-    status: 201
-
-  - get: 
-    to: /thing
-    returns: 
-      - date: may 10
-        content: today I did this
-    status: 201
-  #
-  # - get: 
-  #   to: /todos/{x}
-  #   returns: 
-  #     - date: may 10
-  #       content: today I did this
-  #
-  #     - date: july 10
-  #       content: today I did this
-  #
-  #     - date: august 12
-  #       content: today I did this
+- !get
+  to: /todos
+  returns:
+  - date: may 10
+    something: alskdjas
+  status: 200
+- !get
+  to: /todo/1
+  returns:
+  - date: may 10
+    content: today I did this
+  status: 201
+- !get
+  to: /thing
+  returns:
+  - date: may 10
+    content: today I did this
+  status: 201

@@ -1,1 +1,1 @@
-GET http://localhost:6000/todo/1
+GET http://127.0.0.1:6000/todos

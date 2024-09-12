@@ -1,14 +1,15 @@
 use serde::{Deserialize, Serialize};
 use serde_yaml::Value;
 
-use crate::prelude::*;
+use crate::{model::Endpoint, prelude::*};
 use std::{fs::File, io::BufReader};
 
 use crate::model::Api;
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Config {
-    pub endpoints: Vec<Api>,
+    pub state: Value,
     pub host: String,
+    pub endpoints: Vec<Endpoint>,
 }
 
 impl TryFrom<File> for Config {

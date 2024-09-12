@@ -4,7 +4,8 @@ mod model;
 mod prelude;
 mod routes;
 use std::{
-    fs::{self, File},
+    fs::{self, File, OpenOptions},
+    io::{Read, Write},
     sync::{Arc, Mutex},
 };
 
@@ -25,30 +26,24 @@ async fn main() {
     let f = File::open(filename).expect("could not find file");
     let config = Config::try_from(f).unwrap();
 
-    // for endpoint in &config.endpoints {
-    //     println!(
-    //         "{:?}, {:#?}",
-    //         endpoint.method,
-    //         endpoint
-    //             .returns
-    //             .serialize(serde_json::value::Serializer)
-    //             .unwrap()
-    //     )
-    // }
+    println!("config: {config:#?}");
 
     let mut app = Router::new();
 
-    let state = Arc::new(Mutex::new(AppState {}));
+    let state = Arc::new(Mutex::new(AppState {
+        greeting: "Hello".to_string(),
+        count: 1,
+    }));
 
     // create all endpoints
     for endpoint in config.endpoints {
         app = app.route(
-            &endpoint.to,
+            &endpoint.clone().to,
             get({
                 move |State(state): State<Arc<Mutex<AppState>>>| async move {
                     println!("state = {:?}", state);
                     (
-                        StatusCode::from_u16(endpoint.status.unwrap()).unwrap(),
+                        StatusCode::from_u16(endpoint.status.unwrap_or(200)).unwrap(),
                         axum::Json(serde_json::json!(&endpoint.returns)),
                     )
                 }
@@ -58,7 +53,6 @@ async fn main() {
 
     let app = app.with_state(state);
 
-    // .route("/", get(index));
     let listener = tokio::net::TcpListener::bind(&config.host).await.unwrap();
 
     println!("listening on {}", &config.host);
@@ -67,10 +61,26 @@ async fn main() {
 }
 
 #[derive(Debug, Clone)]
-struct AppState {}
+struct AppState {
+    greeting: String,
+    count: i32,
+}
 
 async fn index() -> String {
     return "Hello".to_string();
+}
+
+async fn make_handler<T2, S2, T, S, H>(route: String) -> T2
+where
+    T2: FnOnce(String) -> S2,
+    S2: FnOnce(String) -> H,
+    H: Handler<T, S>,
+    T: 'static,
+    S: Clone + Send + Sync + 'static,
+{
+    let closure1 = |s| "aslkdjsad".to_string();
+
+    return |t| closure1;
 }
 
 #[cfg(test)]

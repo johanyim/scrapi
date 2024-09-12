@@ -1,8 +1,5 @@
 use std::{future::Future, pin::Pin};
 
-use axum::response::IntoResponse;
-use serde_yaml::Value;
-
 async fn handler_with_params(param2: i32) -> String {
     format!("param2: {}", param2)
 }
